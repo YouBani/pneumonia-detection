@@ -18,6 +18,8 @@ outputs/
 wandb/
 checkpoints/
 
+!src/data/*
+
 # Logs
 *.log
 
