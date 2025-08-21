@@ -13,12 +13,11 @@ env/
 .ipynb_checkpoints/
 
 # Data & outputs
-data/
+data/raw/
+data/processed/
 outputs/
 wandb/
 checkpoints/
-
-!src/data/*
 
 # Logs
 *.log
