@@ -1,0 +1,4 @@
+name: resnet18
+pretrained: false
+in_channels: 1
+out_features: 1
