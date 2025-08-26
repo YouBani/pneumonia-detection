@@ -1,0 +1,26 @@
+# Generated Python artifacts and local environments
+__pycache__/
+*.py[cod]
+*.so
+.venv/
+venv/
+env/
+environment.yml
+
+# IDE and editor files
+.vscode/
+
+# Data, logs, and build artifacts
+data/
+artifacts/
+logs/
+.log
+wandb/
+notebooks/
+checkpoints/
+
+# Other non-essential files
+.git/
+.gitignore
+docker-compose.yml
+.dockerignore
