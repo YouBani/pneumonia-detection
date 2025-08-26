@@ -1,8 +1,9 @@
 defaults:
-  - dataset: dataset
-  - model: model
-  - train: train
-  - logging: logging
+  - _self_
+  - data: default
+  - model: default
+  - train: default
+  - logging: default 
 
 seed: 42
-device: cuda
+device: auto

@@ -1,0 +1,5 @@
+max_epochs: 30
+lr: 1e-4
+use_amp: true
+use_bf16: true
+checkpoint_dir: ./checkpoints

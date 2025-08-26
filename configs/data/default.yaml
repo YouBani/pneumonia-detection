@@ -1,0 +1,5 @@
+path: /home/youness/python/AI-IN-MEDICAL-MATERIALS/Data/processed-pneumonia
+batch_size: 4
+num_workers: 4
+mean: 0.0853
+std: 0.2340

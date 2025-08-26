@@ -1,0 +1,5 @@
+name: resnet18
+pretrained: false
+in_channels: 1
+num_classes: 1
+weights: null
