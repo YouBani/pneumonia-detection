@@ -2,55 +2,62 @@ from __future__ import annotations
 import torch
 import torch.nn as nn
 from torch.optim import AdamW
+from omegaconf import DictConfig, OmegaConf
+import hydra
+from typing import Dict, Any
 
 from src.data import build_loaders
 from src.models import build_model
 from src.trainer import train
-import wandb
 
 
-def main():
+@hydra.main(config_path="../../configs", config_name="config", version_base=None)
+def main(cfg: DictConfig):
     """
     Main function to orchestrate the training process using Hydra configuration.
+
+    Args:
+        cfg (DictConfig): The Hydra configuration object containing all the parameters.
     """
     # print the configuration for reproducibility
-    data_path = "/home/youness/python/AI-IN-MEDICAL-MATERIALS/Data/processed-pneumonia"
-    batch_size = 4
-    num_workers = 4
-    lr = 1e-4
-    max_epochs = 20
-    use_amp = True
-    use_bf16 = True
+    print("Config:\n", OmegaConf.to_yaml(cfg, resolve=True))
 
     device = "cuda" if torch.cuda.is_available() else "cpu"
     print(f"Using device: {device}")
 
-    # setup from config
+    # Build the model using parameters from the config
     model = build_model(
-        model_name="resnet18",
-        num_classes=1,
-        in_channels=1,
-        weights=None,
+        model_name=cfg.model.name,
+        num_classes=cfg.model.num_classes,
+        in_channels=cfg.model.in_channels,
+        weights=cfg.model.weights,
     ).to(device)
 
+    # Build the data loaders using parameters from the config
     train_loader, val_loader, *_ = build_loaders(
-        batch_size=batch_size, num_workers=num_workers, path=data_path
+        batch_size=cfg.data.batch_size,
+        num_workers=cfg.data.num_workers,
+        path=cfg.data.path,
     )
-    optimizer = AdamW(model.parameters(), lr=lr)
+
+    # Define optimizer and loss function
+    optimizer = AdamW(model.parameters(), lr=float(cfg.train.lr))
     loss_fn = nn.BCEWithLogitsLoss()
 
-    summary = train(
+    # --- Train the Model ---
+    summary: Dict[str, Any] = train(
         model=model,
         train_loader=train_loader,
         val_loader=val_loader,
         optimizer=optimizer,
         loss_fn=loss_fn,
         device=device,
-        epochs=max_epochs,
+        epochs=int(cfg.train.max_epochs),
         logger=None,
-        use_amp=use_amp,
-        use_bf16=use_bf16,
+        use_amp=bool(cfg.train.use_amp),
+        use_bf16=bool(cfg.train.use_bf16),
     )
+    print("\nTraining Summary:")
     print(summary)
 
 
