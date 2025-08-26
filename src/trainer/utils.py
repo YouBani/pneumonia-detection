@@ -12,6 +12,15 @@ from pathlib import Path
 from typing import Optional, Dict, Any, Literal
 
 
+def _resolve_device(requested: str = "auto") -> str:
+    """Resolve device string based on requested string."""
+    if requested == "auto":
+        return "cuda" if torch.cuda.is_available() else "cpu"
+    if requested == "mps" and torch.backends.mps.is_available():
+        return "mps"
+    return requested
+
+
 # ------ Logging ------
 def _log(logger: Optional[Any], payload: Dict[str, Any]):
     """Log metrics if a logger with '.log()' is provided (e.g. wandb)."""

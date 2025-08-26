@@ -9,6 +9,7 @@ from typing import Dict, Any
 from src.data import build_loaders
 from src.models import build_model
 from src.trainer import train
+from src.trainer.utils import _resolve_device
 
 
 @hydra.main(config_path="../../configs", config_name="config", version_base=None)
@@ -22,7 +23,7 @@ def main(cfg: DictConfig):
     # print the configuration for reproducibility
     print("Config:\n", OmegaConf.to_yaml(cfg, resolve=True))
 
-    device = "cuda" if torch.cuda.is_available() else "cpu"
+    device = _resolve_device(cfg.device)
     print(f"Using device: {device}")
 
     # Build the model using parameters from the config
