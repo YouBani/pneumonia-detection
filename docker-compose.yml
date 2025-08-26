@@ -1,0 +1,17 @@
+services:
+  trainer:
+    build: .
+    image: pneumo:latest
+    gpus: all
+    working_dir: /workspace
+    env_file: .env
+    environment:
+      WANDB_DIR: /artifacts/wandb
+    volumes: 
+      - ${DATA_DIR}:/data:ro
+      - ${ARTIFACTS_DIR}:/artifacts
+    command: >
+      python -m src.trainer.main
+      data.path=/data
+      train.checkpoint_dir=/artifacts/ckpts
+      
