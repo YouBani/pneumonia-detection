@@ -50,7 +50,7 @@ def train(
     best_path = checkpoint_dir / "best_model.pth"
     last_path = checkpoint_dir / "last_model.pth"
 
-    for epoch in range(1, epochs):
+    for epoch in range(1, epochs + 1):
         train_out = train_one_epoch(
             model=model,
             loader=train_loader,
