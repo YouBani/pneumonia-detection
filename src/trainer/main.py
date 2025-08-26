@@ -5,6 +5,7 @@ from torch.optim import AdamW
 from omegaconf import DictConfig, OmegaConf
 import hydra
 from typing import Dict, Any
+import wandb
 
 from src.data import build_loaders
 from src.models import build_model
@@ -22,6 +23,12 @@ def main(cfg: DictConfig):
     """
     # print the configuration for reproducibility
     print("Config:\n", OmegaConf.to_yaml(cfg, resolve=True))
+
+    wandb.init(
+        project="pneumonia-detection",
+        config=OmegaConf.to_container(cfg, resolve=True),
+    )
+    logger = wandb.run
 
     device = _resolve_device(cfg.device)
     print(f"Using device: {device}")
@@ -54,12 +61,14 @@ def main(cfg: DictConfig):
         loss_fn=loss_fn,
         device=device,
         epochs=int(cfg.train.max_epochs),
-        logger=None,
+        checkpoint_dir=cfg.train.checkpoint_dir,
+        logger=logger,
         use_amp=bool(cfg.train.use_amp),
         use_bf16=bool(cfg.train.use_bf16),
     )
     print("\nTraining Summary:")
     print(summary)
+    wandb.finish()
 
 
 if __name__ == "__main__":

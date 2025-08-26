@@ -143,7 +143,7 @@ def validate(
         x = x.to(device, non_blocking=True).float()
         y = y.to(device, non_blocking=True).float()
 
-        logits = model(x)
+        logits = model(x).squeeze(1)
         loss = loss_fn(logits, y)
 
         preds = torch.sigmoid(logits)

@@ -1,10 +1,10 @@
 from __future__ import annotations
 from typing import Dict, Any, Literal, Optional
-
+from pathlib import Path
 
 import torch
 import torch.nn as nn
-from torch.amp import autocast, GradScaler
+from torch.amp import GradScaler
 from torch.optim.optimizer import Optimizer
 from torch.utils.data import DataLoader
 
@@ -21,6 +21,7 @@ def train(
     loss_fn: nn.Module,
     device: str,
     epochs: int,
+    checkpoint_dir: str,
     logger: Optional[Any] = None,
     use_amp: bool = False,
     use_bf16: bool = False,
@@ -43,10 +44,11 @@ def train(
     base = build_binary_metrics().to(device)
     train_metrics = base.clone()
     val_metrics = base.clone()
-
     best_val_f1: float = 0
-    best_path = "checkpoints/best_model.pth"
-    last_path = "checkpoints/last_model.pth"
+
+    checkpoint_dir = Path(checkpoint_dir)
+    best_path = checkpoint_dir / "best_model.pth"
+    last_path = checkpoint_dir / "last_model.pth"
 
     for epoch in range(1, epochs):
         train_out = train_one_epoch(

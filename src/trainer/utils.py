@@ -13,7 +13,15 @@ from typing import Optional, Dict, Any, Literal
 
 
 def _resolve_device(requested: str = "auto") -> str:
-    """Resolve device string based on requested string."""
+    """
+    Resolve device string based on requested string.
+
+    Args:
+        requested (str): "auto", "cpu", "cuda", "mps".
+
+    Returns:
+        str: The resolved device.
+    """
     if requested == "auto":
         return "cuda" if torch.cuda.is_available() else "cpu"
     if requested == "mps" and torch.backends.mps.is_available():
@@ -21,14 +29,12 @@ def _resolve_device(requested: str = "auto") -> str:
     return requested
 
 
-# ------ Logging ------
 def _log(logger: Optional[Any], payload: Dict[str, Any]):
     """Log metrics if a logger with '.log()' is provided (e.g. wandb)."""
     if logger and hasattr(logger, "log"):
         logger.log(payload)
 
 
-# ------ Metrics ------
 def build_binary_metrics() -> MetricCollection:
     """Standard binary classifiction metrics."""
     return MetricCollection(
@@ -42,7 +48,6 @@ def build_binary_metrics() -> MetricCollection:
     )
 
 
-# ------ Precision / AMP ------
 def select_precision(
     use_amp: bool, prefer_bf16: bool
 ) -> Literal["bf16", "fp16", "fp32"]:
@@ -63,7 +68,6 @@ def amp_dtype_from_str(precision: Literal["bf16", "fp16", "fp32"]):
     return torch.float32
 
 
-# ------ Checkpoint ------
 def save_checkpoint(
     path: str,
     model_state: Dict[str, Any],
@@ -71,9 +75,10 @@ def save_checkpoint(
     epoch: Optional[int] = None,
     precision: Optional[str] = None,
 ) -> None:
-    """Save a checkpoint."""
-    path_obj = Path(path)
-    path_obj.mkdir(parents=True, exist_ok=True)
+    """Save a checkpoint to a file."""
+    dest = Path(path)
+    assert not dest.is_dir(), f"Checkpoint path points to a directory {dest}"
+
     payload: Dict[str, Any] = {"model": model_state}
     if optimizer_state is not None:
         payload["optimizer"] = optimizer_state
@@ -81,6 +86,11 @@ def save_checkpoint(
         payload["epoch"] = epoch
     if precision is not None:
         payload["precision"] = precision
-    tmp = path_obj.with_suffix(".tmp")
+
+    tmp = (
+        dest.with_suffix(dest.suffix + ".tmp")
+        if dest.suffix
+        else dest.with_suffix(".tmp")
+    )
     torch.save(payload, tmp)
-    os.replace(tmp, path_obj)
+    os.replace(tmp, dest)
