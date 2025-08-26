@@ -1,0 +1,23 @@
+name: pneumo-py310
+channels:
+  - pytorch
+  - nvidia
+  - conda-forge
+dependencies:
+  - python=3.10
+  - pytorch=2.5.1
+  - torchvision=0.20.1
+  - pytorch-cuda=12.1
+  - hydra-core=1.3.2
+  - omegaconf=2.3.0
+  - numpy=1.26.4
+  - pandas=2.2.2
+  - matplotlib-base=3.9.2
+  - pillow
+  - tqdm=4.67.1
+  - pydicom=3.0.1
+  - pip=24.2
+  - pip:
+      - torchmetrics==1.8.1
+      - wandb==0.21.1
+      - opencv-python-headless==4.12.0.88
