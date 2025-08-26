@@ -1,1 +1,3 @@
-from src.data.data import build_loaders
+from .data import build_loaders
+
+__all__ = ["build_loaders"]
