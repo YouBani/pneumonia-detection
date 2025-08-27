@@ -30,7 +30,17 @@ def train(
     Orchestrate the full training: precision setup, scaler, metrics, per-epoch logs, logging, checkpoints.
 
     Args:
-        ;;;
+        model (nn.Module): The model to be trained.
+        train_loader (DataLoader): The DataLoader for the training data.
+        val_loader (DataLoader): The DataLoader for the validation data.
+        optimizer (Optimizer): The optimizer to use for training.
+        loss_fn (nn.Module): The loss function.
+        device (str): The device to run training on.
+        epochs (int): The total number of epochs to train for.
+        checkpoint_dir (str): The directory where model checkpoints will be saved.
+        logger (Optional[Any]): An optional logger object (e.g.wandb).
+        use_amp (bool): If True, enables Automatic Mixed Precision (AMP) training.
+        use_bf16 (bool): If True, prefers bfloat16 over float16 for AMP if supported.
 
     Returns:
         Dict[str, Any]: Summary with best F1 and checkpoint paths.
@@ -80,6 +90,13 @@ def train(
             f"train: loss={train_out['train/loss']:.4f}, acc={train_out['train/acc']:.4f}, f1={train_out['train/f1']:.4f} | "
             f"val:   loss={val_out['val/loss']:.4f}, acc={val_out['val/acc']:.4f}, f1={val_out['val/f1']:.4f}"
         )
+
+        # --- SageMaker metrics ---
+        print(f"val_loss: {val_out['val/loss']:.6f}", flush=True)
+        print(f"val_acc: {val_out['val/acc']:.6f}", flush=True)
+        print(f"val_f1: {val_out['val/f1']:.6f}", flush=True)
+        if "val/auroc" in val_out:
+            print(f"val_auc: {val_out['val/auroc']:.6f}", flush=True)
 
         save_checkpoint(
             last_path,
