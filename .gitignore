@@ -8,6 +8,7 @@ __pycache__/
 .venv/
 venv/
 env/
+.env
 
 # Jupyter Notebook checkpoints
 .ipynb_checkpoints/
@@ -18,6 +19,7 @@ data/processed/
 outputs/
 wandb/
 checkpoints/
+artifacts/
 
 # Logs
 *.log
