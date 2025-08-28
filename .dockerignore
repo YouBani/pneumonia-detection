@@ -13,11 +13,11 @@ environment.yml
 # Data, logs, and build artifacts
 data/
 artifacts/
-logs/
-.log
 wandb/
 notebooks/
 checkpoints/
+scripts/
+outputs/
 
 # Other non-essential files
 .git/
