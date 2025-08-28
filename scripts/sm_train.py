@@ -1,7 +1,12 @@
 from dotenv import load_dotenv
 import sagemaker
 
-from scripts.sm_common import build_estimator, build_inputs, get_wandb_key
+from scripts.sm_common import (
+    build_estimator,
+    build_inputs,
+    get_wandb_key,
+    default_metric_defs,
+)
 from scripts.settings import SMSettings
 
 
@@ -12,9 +17,7 @@ def main():
     load_dotenv()
     cfg = SMSettings.from_env()
 
-    sm_session = sagemaker.Session()
-
-    wandb_api_key = get_wandb_key(cfg.secret_id, cfg.region)
+    wandb_api_key = get_wandb_key(cfg)
 
     hparams = {
         "model.name": "resnet18",
@@ -26,25 +29,19 @@ def main():
         "train.max_epochs": "1",
         "device": "auto",
         "train.use_amp": "true",
-        # "train.use_bf16": "true",
     }
     est = build_estimator(
-        image_uri=cfg.image_uri,
-        role=cfg.role,
-        instance_type=cfg.instance_type,
-        bucket=cfg.bucket,
-        sagemaker_session=sm_session,
+        cfg,
         base_hparams=hparams,
         env_extra=wandb_api_key,
-        output_prefix=cfg.output_prefix,
+        metric_definitions=default_metric_defs(),
     )
-
-    est.fit(build_inputs(cfg.bucket), wait=False)
+    est.fit(build_inputs(cfg), wait=False)
 
     job_name = est.latest_training_job.job_name
     print("Started job:", job_name)
 
-    sm_session.logs_for_job(job_name=job_name, wait=True)
+    sagemaker.Session().logs_for_job(job_name=job_name, wait=True)
     print("Done. Model artifact at:", est.model_data)
 
 
