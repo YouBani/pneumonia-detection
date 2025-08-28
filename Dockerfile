@@ -14,6 +14,8 @@ RUN pip install --no-cache-dir --upgrade pip && \
 
 COPY . /workspace
 
+ENV PYTHONPATH=/workspace
+
 ENV WANDB_PROJECT=pneumonia-detection
 ENV WANDB_DIR=/workspace/wandb
 
