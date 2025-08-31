@@ -19,4 +19,5 @@ ENV PYTHONPATH=/workspace
 ENV WANDB_PROJECT=pneumonia-detection
 ENV WANDB_DIR=/workspace/wandb
 
-CMD ["python", "-m", "src.trainer.main"]
+ENTRYPOINT ["python", "-m", "tools.sm_entry"]
+CMD []
