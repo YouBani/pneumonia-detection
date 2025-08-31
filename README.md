@@ -6,25 +6,6 @@ Experiment tracking is done with **Weights & Biases (W&B)**.
 
 ## Repository Structure
 ```
-├── configs/ # Hydra configs (training, model, data, hpo)
-├── scripts/
-│ ├── settings.py # Loads SageMaker config from environment
-│ ├── sm_common.py # Shared SageMaker utilities (estimator, input, W&B key, metrics)
-│ ├── sm_hpo.py # Entry point for SageMaker HPO
-│ ├── sm_train.py # Entry point for SageMaker training
-├── src/
-├── src/
-│   ├── trainer/
-│   └── ...
-├── tools/
-│   ├── sm_entry.py           # The entry point for SageMaker containers.
-│   └── ...
-├── train.py # Hydra-based local training script
-├── Dockerfile
-├── docker-compose.yml # For running the training job locally with Docker.
-├── requirements.docker.txt # Python dependencies for the Docker image.
-└── README.md
-
 pneumonia-detection/
 ├── configs/                   # Hydra configuration system
 │   ├── config.yaml            # Default config
