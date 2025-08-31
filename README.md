@@ -5,7 +5,7 @@ It is designed for **AWS SageMaker**, but also supports running locally using **
 Experiment tracking is done with **Weights & Biases (W&B)**.  
 
 ## Repository Structure
-
+```
 ├── configs/ # Hydra configs (training, model, data, hpo)
 ├── scripts/
 │ ├── settings.py # Loads SageMaker config from environment
@@ -65,7 +65,7 @@ pneumonia-detection/
 ├── requirements.docker.txt    # Python dependencies for the Docker image.
 ├── README.md
 └── LICENSE
-
+```
 ## Features
 
 - **Hydra Mode**
